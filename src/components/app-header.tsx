@@ -19,7 +19,7 @@ export function AppHeader() {
           <div className="flex items-center gap-3">
             <Bot size={28} className="text-primary" />
             <h1 className="text-xl font-bold font-headline text-foreground">
-              Research Pilot
+              Synapse AI
             </h1>
           </div>
           <div>

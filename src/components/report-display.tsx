@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -16,20 +14,10 @@ interface ReportDisplayProps {
 }
 
 const WelcomeState = () => {
-  const welcomeImage = PlaceHolderImages.find(img => img.id === 'report-welcome');
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
-      {welcomeImage && (
-        <Image
-          src={welcomeImage.imageUrl}
-          alt={welcomeImage.description}
-          width={400}
-          height={300}
-          className="rounded-lg mb-8 max-w-xs"
-          data-ai-hint={welcomeImage.imageHint}
-        />
-      )}
-      <h2 className="text-2xl font-bold font-headline mb-2">Welcome to Research Pilot</h2>
+      <Bot size={48} className="text-primary mb-6" />
+      <h2 className="text-2xl font-bold font-headline mb-2">Welcome to Synapse AI</h2>
       <p className="text-muted-foreground max-w-md">
         Your generated report will appear here. Fill out the form to the left to start your first research task.
       </p>
