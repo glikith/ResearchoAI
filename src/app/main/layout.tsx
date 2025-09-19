@@ -3,5 +3,5 @@ export default function MainAppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <div className="text-gray-200">{children}</div>;
 }

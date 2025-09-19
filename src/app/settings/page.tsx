@@ -6,17 +6,27 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from 'next-themes';
 
+const AppFooter = () => (
+    <footer className="border-t border-gray-800 py-6">
+        <div className="container mx-auto px-6 text-center text-gray-500">
+            <p className="text-lg font-semibold mb-2">Team Code Blooded</p>
+            <p className="text-gray-400">Ashritha - Likith - Pravin - Raghu - Samhitha - Sreeja</p>
+            <p className="text-sm mt-2">© 2025 Researcho AI. All Rights Reserved.</p>
+        </div>
+    </footer>
+);
+
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
 
   return (
     <div className="flex flex-col min-h-screen">
       <AppHeader />
-      <main className="flex-1 p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 pt-24">
         <div className="max-w-3xl mx-auto">
-          <Card>
+          <Card className="card-bg border border-gray-800">
             <CardHeader>
-              <CardTitle>Settings</CardTitle>
+              <CardTitle className="gradient-text">Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
@@ -47,6 +57,7 @@ export default function SettingsPage() {
           </Card>
         </div>
       </main>
+      <AppFooter />
     </div>
   );
 }
