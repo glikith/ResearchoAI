@@ -15,6 +15,12 @@ const formSchema = z.object({
   liveDataUrl: z.string().optional(),
 });
 
+async function fileToDataURI(file: File) {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  return `data:${file.type};base64,${buffer.toString('base64')}`;
+}
+
 export async function generateReportAction(
   prevState: FormState,
   formData: FormData
@@ -24,11 +30,13 @@ export async function generateReportAction(
     const files = formData.getAll('files') as File[];
     const liveDataUrl = formData.get('liveDataUrl') as string;
 
-    const fileNames = files.map((file) => file.name).filter(name => name);
+    const fileDataURIs = await Promise.all(
+        files.filter(file => file.name).map(file => fileToDataURI(file))
+    );
 
     const validatedFields = formSchema.safeParse({
       question: question,
-      files: fileNames,
+      files: fileDataURIs,
       liveDataUrl: liveDataUrl,
     });
 
