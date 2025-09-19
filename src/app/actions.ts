@@ -49,7 +49,7 @@ export async function generateReportAction(
       };
     }
 
-    const { output } = await generateResearchReport({
+    const output = await generateResearchReport({
       question: validatedFields.data.question,
       uploadedFiles: validatedFields.data.files,
       liveDataUrl: validatedFields.data.liveDataUrl,
