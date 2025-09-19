@@ -22,7 +22,7 @@ export default function WelcomePage() {
         <section id="home" className="min-h-screen flex flex-col justify-center items-center text-center">
              <div className="max-w-3xl">
                 <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4">
-                    ResearchoAI
+                    Smart Research Assistant
                 </h1>
                 <p className="text-lg md:text-xl text-gray-400 mb-8">
                     Transform hours of fragmented research into concise, evidence-based reports. Upload files, ask questions, and get instant insights with proper citations.
