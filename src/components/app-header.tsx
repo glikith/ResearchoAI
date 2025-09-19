@@ -22,10 +22,7 @@ export function AppHeader() {
               Research Pilot
             </h1>
           </div>
-          <div className="hidden md:block">
-            {/* Desktop menu can go here if needed */}
-          </div>
-          <div className="md:hidden">
+          <div>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
