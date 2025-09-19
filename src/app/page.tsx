@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useActionState } from 'react';
+import React, { useState, useEffect, useActionState, useTransition } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -34,10 +34,11 @@ const Footer = () => (
 
 
 export default function Home() {
-  const [questionsAsked, setQuestionsAsked] = useState(0);
+  const [creditsLeft, setCreditsLeft] = useState(25);
   const [reportsGenerated, setReportsGenerated] = useState(0);
   const [fileNames, setFileNames] = useState<string[]>([]);
-  
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,15 +71,34 @@ export default function Home() {
   }, [state, toast]);
   
   const onFormSubmit = (data: FormValues) => {
-    setQuestionsAsked((prev) => prev + 1);
-    const formData = new FormData();
-    formData.append('question', data.question);
-    if (data.files && data.files.length > 0) {
-      for (let i = 0; i < data.files.length; i++) {
-        formData.append('files', data.files[i]);
-      }
+    const files = data.files ? Array.from(data.files) : [];
+    let creditsToDeduct = 1; // Direct text summary
+    if (files.length === 1) {
+      creditsToDeduct = 2; // Single document
+    } else if (files.length > 1) {
+      creditsToDeduct = 5; // Multiple documents
     }
-    formAction(formData);
+
+    if (creditsLeft < creditsToDeduct) {
+      toast({
+        variant: 'destructive',
+        title: 'Not enough credits',
+        description: `You need ${creditsToDeduct} credits for this action, but you only have ${creditsLeft}.`,
+      });
+      return;
+    }
+    
+    startTransition(() => {
+      const formData = new FormData();
+      formData.append('question', data.question);
+      if (data.files && data.files.length > 0) {
+        for (let i = 0; i < data.files.length; i++) {
+          formData.append('files', data.files[i]);
+        }
+      }
+      formAction(formData);
+      setCreditsLeft(prev => prev - creditsToDeduct);
+    });
   };
   
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +164,7 @@ export default function Home() {
                       )}
                     />
                     
-                    <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                    <Button type="submit" className="w-full" disabled={isPending}>
                       <Rocket />
                       Generate Report
                     </Button>
@@ -162,8 +182,8 @@ export default function Home() {
               </CardHeader>
               <CardContent className="grid grid-cols-2 gap-4 text-center">
                 <div className="bg-muted/50 p-4 rounded-lg">
-                  <p className="text-sm text-muted-foreground">Credits Used</p>
-                  <p className="text-2xl font-bold">{questionsAsked}</p>
+                  <p className="text-sm text-muted-foreground">Credits Left</p>
+                  <p className="text-2xl font-bold">{creditsLeft}</p>
                 </div>
                 <div className="bg-muted/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Reports Generated</p>
@@ -175,7 +195,7 @@ export default function Home() {
 
           {/* Right Column */}
           <div className="lg:col-span-3">
-            <ReportDisplay state={state} isSubmitting={form.formState.isSubmitting} />
+            <ReportDisplay state={state} isSubmitting={isPending} />
           </div>
         </div>
       </main>
