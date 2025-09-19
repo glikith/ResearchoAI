@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 export interface FormState {
   report: string | null;
+  keypoints: string[] | null;
   sources: string[] | null;
   error: string | null;
 }
@@ -12,7 +13,6 @@ export interface FormState {
 const formSchema = z.object({
   question: z.string(),
   files: z.array(z.string()),
-  liveDataUrl: z.string().optional(),
 });
 
 async function fileToDataURI(file: File) {
@@ -28,7 +28,6 @@ export async function generateReportAction(
   try {
     const question = formData.get('question') as string;
     const files = formData.getAll('files') as File[];
-    const liveDataUrl = formData.get('liveDataUrl') as string;
 
     const fileDataURIs = await Promise.all(
         files.filter(file => file.name).map(file => fileToDataURI(file))
@@ -37,13 +36,13 @@ export async function generateReportAction(
     const validatedFields = formSchema.safeParse({
       question: question,
       files: fileDataURIs,
-      liveDataUrl: liveDataUrl,
     });
 
     if (!validatedFields.success) {
       return {
         ...prevState,
         report: null,
+        keypoints: null,
         sources: null,
         error: 'Invalid input.',
       };
@@ -52,13 +51,13 @@ export async function generateReportAction(
     const output = await generateResearchReport({
       question: validatedFields.data.question,
       uploadedFiles: validatedFields.data.files,
-      liveDataUrl: validatedFields.data.liveDataUrl,
     });
 
     if (!output) {
       return {
         ...prevState,
         report: null,
+        keypoints: null,
         sources: null,
         error: 'The AI failed to generate a report.',
       };
@@ -66,6 +65,7 @@ export async function generateReportAction(
 
     return {
       report: output.report,
+      keypoints: output.keypoints,
       sources: output.sources,
       error: null,
     };
@@ -75,6 +75,7 @@ export async function generateReportAction(
     return {
       ...prevState,
       report: null,
+      keypoints: null,
       sources: null,
       error: `An unexpected error occurred: ${errorMessage}`,
     };

@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { FormState } from '@/app/actions';
-import { Bot, Link as LinkIcon, AlertCircle } from 'lucide-react';
+import { Bot, Link as LinkIcon, AlertCircle, FileText, ListChecks, Link } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface ReportDisplayProps {
   state: FormState;
@@ -99,7 +100,7 @@ const renderContent = (text: string) => {
   return elements;
 };
 
-const ReportState: React.FC<{ report: string; sources: string[] }> = ({ report, sources }) => (
+const ReportState: React.FC<{ report: string; keypoints: string[]; sources: string[] }> = ({ report, keypoints, sources }) => (
   <>
     <CardHeader>
       <CardTitle className="flex items-center gap-3 text-2xl font-headline">
@@ -108,30 +109,50 @@ const ReportState: React.FC<{ report: string; sources: string[] }> = ({ report, 
       </CardTitle>
     </CardHeader>
     <CardContent className="prose prose-sm max-w-none">
-      <div>
-        {renderContent(report)}
-      </div>
-
-      {sources && sources.length > 0 && (
-        <div className="mt-12">
-          <h3 className="text-xl font-bold mb-4 font-headline">Sources</h3>
-          <ul className="space-y-2">
-            {sources.map((source, index) => (
-              <li key={index} className="flex items-center gap-2">
-                <LinkIcon className="h-4 w-4 text-accent flex-shrink-0" />
-                <a
-                  href={source}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline break-all text-sm"
-                >
-                  {source}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <Tabs defaultValue="report">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="report"><FileText className="mr-2" /> Report</TabsTrigger>
+          <TabsTrigger value="keypoints"><ListChecks className="mr-2" /> Key Points</TabsTrigger>
+          <TabsTrigger value="sources"><Link className="mr-2" /> Sources</TabsTrigger>
+        </TabsList>
+        <TabsContent value="report" className="mt-4">
+            <div>
+              {renderContent(report)}
+            </div>
+        </TabsContent>
+        <TabsContent value="keypoints" className="mt-4">
+          {keypoints && keypoints.length > 0 && (
+            <div>
+              <ul className="space-y-3 list-disc list-inside">
+                {keypoints.map((point, index) => (
+                  <li key={index}>{point}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </TabsContent>
+        <TabsContent value="sources" className="mt-4">
+          {sources && sources.length > 0 && (
+            <div>
+              <ul className="space-y-2">
+                {sources.map((source, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <LinkIcon className="h-4 w-4 text-accent flex-shrink-0" />
+                    <a
+                      href={source}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline break-all text-sm"
+                    >
+                      {source}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </CardContent>
   </>
 );
@@ -153,8 +174,8 @@ export const ReportDisplay: React.FC<ReportDisplayProps> = ({ state, isSubmittin
                 </AlertDescription>
               </Alert>
           </div>
-        ) : state.report && state.sources ? (
-          <ReportState report={state.report} sources={state.sources} />
+        ) : state.report && state.sources && state.keypoints ? (
+          <ReportState report={state.report} keypoints={state.keypoints} sources={state.sources} />
         ) : (
           <WelcomeState />
         )}
