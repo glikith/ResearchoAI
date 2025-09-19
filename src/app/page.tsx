@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { useFormState } from 'react-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -28,7 +28,8 @@ export default function Home() {
   const [questionsAsked, setQuestionsAsked] = useState(0);
   const [reportsGenerated, setReportsGenerated] = useState(0);
   const [fileNames, setFileNames] = useState<string[]>([]);
-  
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,7 +71,9 @@ export default function Home() {
         formData.append('files', data.files[i]);
       }
     }
-    formAction(formData);
+    startTransition(() => {
+      formAction(formData);
+    });
   };
   
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,7 +159,7 @@ export default function Home() {
                     )}
                   />
                   
-                  <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                  <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || isPending}>
                     <Rocket />
                     Generate Report
                   </Button>
@@ -187,7 +190,7 @@ export default function Home() {
 
         {/* Right Column */}
         <div className="lg:col-span-3">
-          <ReportDisplay state={state} isSubmitting={form.formState.isSubmitting} />
+          <ReportDisplay state={state} isSubmitting={form.formState.isSubmitting || isPending} />
         </div>
       </div>
     </main>
