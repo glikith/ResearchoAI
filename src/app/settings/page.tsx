@@ -1,9 +1,14 @@
+'use client';
+
 import { AppHeader } from '@/components/app-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { useTheme } from 'next-themes';
 
 export default function SettingsPage() {
+  const { theme, setTheme } = useTheme();
+
   return (
     <div className="flex flex-col min-h-screen">
       <AppHeader />
@@ -21,7 +26,13 @@ export default function SettingsPage() {
                     Enable or disable dark mode.
                   </span>
                 </Label>
-                <Switch id="dark-mode" />
+                <Switch
+                  id="dark-mode"
+                  checked={theme === 'dark'}
+                  onCheckedChange={(checked) => {
+                    setTheme(checked ? 'dark' : 'light');
+                  }}
+                />
               </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="notifications" className="flex flex-col gap-1">
