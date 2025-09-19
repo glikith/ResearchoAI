@@ -127,11 +127,8 @@ export default function Home() {
                              <div className="mb-6"><h4 className="text-lg font-semibold text-gray-300 mb-3">Recent Reports</h4>
                                 <ReportDisplay state={state} isSubmitting={isPending} />
                              </div>
-                             <div className="grid grid-cols-2 gap-4">
-                                 <div className="text-center p-4 bg-gray-800 rounded-lg"><p className="text-2xl font-bold text-indigo-400" id="reportsGenerated">{reportsGenerated}</p><p className="text-sm text-gray-400">Reports Generated</p></div>
-                                 <div className="text-center p-4 bg-gray-800 rounded-lg"><p className="text-2xl font-bold text-purple-400" id="filesUploaded">{filesUploaded}</p><p className="text-sm text-gray-400">Files Uploaded</p></div>
-                                 <div className="text-center p-4 bg-gray-800 rounded-lg"><p className="text-2xl font-bold text-green-400" id="creditsRemaining">{creditsLeft}</p><p className="text-sm text-gray-400">Credits Remaining</p></div>
-                                 <div className="text-center p-4 bg-gray-800 rounded-lg"><p className="text-2xl font-bold text-teal-400">99.2%</p><p className="text-sm text-gray-400">Accuracy Score</p></div>
+                             <div className="grid grid-cols-1 gap-4">
+                                 <div className="text-center p-4 bg-gray-800 rounded-lg"><p className="text-2xl font-bold text-green-400" id="creditsRemaining">{creditsLeft}</p><p className="text-sm text-gray-400">Credits Left Today</p></div>
                              </div>
                          </div>
                     </div>
@@ -171,7 +168,6 @@ export default function Home() {
                          </div>
                          <div className="card-bg border border-gray-800 rounded-lg p-4 text-center">
                           <p className="text-sm text-gray-400 mb-2">Daily 50 credits | <Link href="/credits" className="text-indigo-400 hover:text-indigo-300">Upgrade for more</Link></p>
-                          <p className="text-sm text-indigo-400 font-medium">Powered by <a href="https://github.com/flexprice/flexprice?tab=readme-ov-file" target="_blank" className="underline">Flexprice</a></p>
                          </div>
                      </div>
                  </div>

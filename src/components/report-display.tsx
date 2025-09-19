@@ -37,22 +37,31 @@ const LoadingState = () => (
 
 const renderContent = (text: string) => {
   if (!text) return null;
+
+  const processLine = (line: string) => {
+    // Bold
+    line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    return line;
+  };
+
   const blocks = text.split('\n\n');
   return blocks.map((block, index) => {
     block = block.trim();
+
     if (block.startsWith('## ')) {
-      return <h2 key={index} className="text-2xl font-bold mt-6 mb-3" dangerouslySetInnerHTML={{ __html: block.substring(3) }} />;
+      return <h2 key={index} className="text-2xl font-bold mt-6 mb-3" dangerouslySetInnerHTML={{ __html: processLine(block.substring(3)) }} />;
     }
     if (block.startsWith('# ')) {
-        return <h1 key={index} className="text-3xl font-bold mt-8 mb-4" dangerouslySetInnerHTML={{ __html: block.substring(2) }} />;
+        return <h1 key={index} className="text-3xl font-bold mt-8 mb-4" dangerouslySetInnerHTML={{ __html: processLine(block.substring(2)) }} />;
     }
     if (block.startsWith('- ') || block.startsWith('* ')) {
-      const listItems = block.split('\n').map((item, itemIndex) => (
-        <li key={itemIndex} dangerouslySetInnerHTML={{ __html: item.substring(2) }} />
-      ));
+      const listItems = block.split('\n').map((item, itemIndex) => {
+        const content = item.substring(item.startsWith('- ') ? 2 : 2); // Handles both '- ' and '* '
+        return <li key={itemIndex} dangerouslySetInnerHTML={{ __html: processLine(content) }} />;
+      });
       return <ul key={index} className="list-disc list-inside space-y-2 my-4 pl-4">{listItems}</ul>;
     }
-    return <p key={index} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{ __html: block }} />;
+    return <p key={index} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{ __html: processLine(block) }} />;
   });
 };
 
