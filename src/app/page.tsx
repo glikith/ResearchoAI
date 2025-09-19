@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useTransition, useActionState } from 'react';
+import React, { useState, useEffect, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,7 +13,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ReportDisplay } from '@/components/report-display';
 import { useToast } from '@/hooks/use-toast';
-import { Rocket, Bot, FileText, BarChart3, UploadCloud } from 'lucide-react';
+import { Rocket, FileText, BarChart3, UploadCloud } from 'lucide-react';
+import { AppHeader } from '@/components/app-header';
 
 const formSchema = z.object({
   question: z.string().min(10, 'Your question must be at least 10 characters.'),
@@ -22,25 +23,21 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const Header = () => (
-  <header className="bg-background border-b">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex items-center justify-between h-16">
-        <div className="flex items-center gap-3">
-          <Bot size={28} className="text-primary" />
-          <h1 className="text-xl font-bold font-headline text-foreground">Research Pilot</h1>
-        </div>
-      </div>
+const Footer = () => (
+  <footer className="bg-background border-t py-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-muted-foreground">
+      <p className="font-bold">Team Code Blooded</p>
+      <p>Ashritha - Likith - Pravin - Raghu - Samhitha - Sreeja</p>
     </div>
-  </header>
+  </footer>
 );
+
 
 export default function Home() {
   const [questionsAsked, setQuestionsAsked] = useState(0);
   const [reportsGenerated, setReportsGenerated] = useState(0);
   const [fileNames, setFileNames] = useState<string[]>([]);
-  const [isPending, startTransition] = useTransition();
-
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -81,9 +78,7 @@ export default function Home() {
         formData.append('files', data.files[i]);
       }
     }
-    startTransition(() => {
-      formAction(formData);
-    });
+    formAction(formData);
   };
   
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,8 +90,8 @@ export default function Home() {
 
 
   return (
-    <div className='flex flex-col h-full'>
-      <Header />
+    <div className='flex flex-col min-h-screen'>
+      <AppHeader />
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 h-full">
           {/* Left Column */}
@@ -149,7 +144,7 @@ export default function Home() {
                       )}
                     />
                     
-                    <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || isPending}>
+                    <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                       <Rocket />
                       Generate Report
                     </Button>
@@ -180,10 +175,11 @@ export default function Home() {
 
           {/* Right Column */}
           <div className="lg:col-span-3">
-            <ReportDisplay state={state} isSubmitting={form.formState.isSubmitting || isPending} />
+            <ReportDisplay state={state} isSubmitting={form.formState.isSubmitting} />
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

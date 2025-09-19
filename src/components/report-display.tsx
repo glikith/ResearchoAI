@@ -60,44 +60,31 @@ const LoadingState = () => (
 
 const renderContent = (text: string) => {
   if (!text) return null;
-  const contentWithStrong = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  
-  const blocks = contentWithStrong.split('\n').filter(block => block.trim() !== '');
 
-  const elements: JSX.Element[] = [];
-  let listItems: string[] = [];
+  const blocks = text.split('\n\n');
 
-  const flushList = (key: number) => {
-    if (listItems.length > 0) {
-      elements.push(
-        <ul key={`ul-${key}`} className="list-disc list-inside space-y-2 my-4 pl-4">
-          {listItems.map((item, index) => (
-            <li key={`li-${index}`} dangerouslySetInnerHTML={{ __html: item }} />
-          ))}
-        </ul>
-      );
-      listItems = [];
-    }
-  };
-
-  blocks.forEach((block, index) => {
+  return blocks.map((block, index) => {
+    block = block.trim();
     if (block.startsWith('## ')) {
-      flushList(index);
-      elements.push(
-        <h2 key={index} className="text-2xl font-bold mt-6 mb-3 font-headline" dangerouslySetInnerHTML={{ __html: block.substring(3) }} />
-      );
-    } else if (block.trim().startsWith('- ') || block.trim().startsWith('* ')) {
-      listItems.push(block.trim().substring(2));
-    } else {
-      flushList(index);
-      elements.push(
-        <p key={index} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{ __html: block }} />
+      return (
+        <h2 key={index} className="text-2xl font-bold mt-6 mb-3 font-headline" dangerouslySetInnerHTML={{ __html: block.substring(3).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
       );
     }
+    if (block.startsWith('# ')) {
+        return (
+          <h1 key={index} className="text-3xl font-bold mt-8 mb-4 font-headline" dangerouslySetInnerHTML={{ __html: block.substring(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+        );
+    }
+    if (block.startsWith('- ') || block.startsWith('* ')) {
+      const listItems = block.split('\n').map((item, itemIndex) => (
+        <li key={itemIndex} dangerouslySetInnerHTML={{ __html: item.substring(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+      ));
+      return <ul key={index} className="list-disc list-inside space-y-2 my-4 pl-4">{listItems}</ul>;
+    }
+    return (
+      <p key={index} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{ __html: block.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+    );
   });
-
-  flushList(blocks.length);
-  return elements;
 };
 
 const ReportState: React.FC<{ report: string; keypoints: string[]; sources: string[] }> = ({ report, keypoints, sources }) => (
