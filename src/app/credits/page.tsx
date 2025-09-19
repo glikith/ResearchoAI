@@ -19,7 +19,7 @@ export default function CreditsPage() {
     { feature: 'Team collaboration', free: <Minus className="h-5 w-5 text-muted-foreground mx-auto" />, pro: '3 members', premium: '10 members' },
     { feature: 'API access', free: <Minus className="h-5 w-5 text-muted-foreground mx-auto" />, pro: 'Optional add-on', premium: <Check className="h-5 w-5 text-green-500 mx-auto" /> },
     { feature: 'Support', free: 'Community only', pro: 'Email (24 hr)', premium: 'Priority chat/email (8 hr)' },
-    { feature: 'Usage analytics / advanced export', free: <Minus className="h-5 w-5 text-muted-foreground mx-auto" />, pro: <Check className="h-5 w-5 text-green-500 mx-auto" />, premium: <Check className="h-5 w-5 text-green-500 mx-auto" /> },
+    { feature: 'Usage analytics / advanced export', free: <Minus className="h-5 w-5 text-muted-foreground mx-auto" />, pro: <Minus className="h-5 w-5 text-muted-foreground mx-auto" />, premium: <Check className="h-5 w-5 text-green-500 mx-auto" /> },
   ];
 
   return (
