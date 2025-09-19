@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Bot, Home, Settings, CreditCard } from 'lucide-react';
@@ -25,7 +26,7 @@ export function AppHeader() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button asChild variant="ghost" size="icon">
+                  <Button asChild variant="ghost" size="icon" className="hover:bg-primary/10 hover:text-primary">
                     <Link href="/main">
                       <Home />
                       <span className="sr-only">Home</span>
@@ -38,7 +39,7 @@ export function AppHeader() {
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button asChild variant="ghost" size="icon">
+                  <Button asChild variant="ghost" size="icon" className="hover:bg-primary/10 hover:text-primary">
                     <Link href="/credits">
                       <CreditCard />
                       <span className="sr-only">Credits</span>
@@ -51,7 +52,7 @@ export function AppHeader() {
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button asChild variant="ghost" size="icon">
+                  <Button asChild variant="ghost" size="icon" className="hover:bg-primary/10 hover:text-primary">
                     <Link href="/settings">
                       <Settings />
                       <span className="sr-only">Settings</span>
