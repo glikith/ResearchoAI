@@ -21,13 +21,13 @@ export default function WelcomePage() {
       <main className="flex-1">
         <section id="home" className="min-h-screen flex flex-col justify-center items-center text-center">
              <div className="max-w-3xl">
-                <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4">
-                    ResearchoAI
+                <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4 fade-in-up" style={{ animationDelay: '0.2s', opacity: 0 }}>
+                    Researcho AI
                 </h1>
-                <p className="text-lg md:text-xl text-gray-400 mb-8">
+                <p className="text-lg md:text-xl text-gray-400 mb-8 fade-in-up" style={{ animationDelay: '0.4s', opacity: 0 }}>
                     Transform hours of fragmented research into concise, evidence-based reports. Upload files, ask questions, and get instant insights with proper citations.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 fade-in-up" style={{ animationDelay: '0.6s', opacity: 0 }}>
                     <Button asChild size="lg" className="bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-indigo-700 transition-transform duration-300 transform hover:scale-105">
                       <Link href="/main">
                         Get Started Free
@@ -37,7 +37,7 @@ export default function WelcomePage() {
                         Watch Demo
                     </Button>
                 </div>
-                 <div className="flex justify-center items-center space-x-8 text-sm text-gray-500">
+                 <div className="flex justify-center items-center space-x-8 text-sm text-gray-500 fade-in-up" style={{ animationDelay: '0.8s', opacity: 0 }}>
                      <div className="flex items-center space-x-2"><div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div><span>Live Updates</span></div>
                      <div className="flex items-center space-x-2"><div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div><span>100% Cited</span></div>
                      <div className="flex items-center space-x-2"><div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div><span>Multi-Source</span></div>
