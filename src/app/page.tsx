@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useTransition } from 'react';
-import { useFormState } from 'react-dom';
+import React, { useState, useEffect, useTransition, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -46,7 +45,7 @@ export default function Home() {
     error: null,
   };
 
-  const [state, formAction] = useFormState(generateReportAction, initialState);
+  const [state, formAction] = useActionState(generateReportAction, initialState);
 
   useEffect(() => {
     if (state.error) {
