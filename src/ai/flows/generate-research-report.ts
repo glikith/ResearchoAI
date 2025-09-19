@@ -41,32 +41,6 @@ export async function generateResearchReport(
   return generateResearchReportFlow(input);
 }
 
-const fetchDataTool = ai.defineTool({
-  name: 'fetchData',
-  description: 'Fetches data from a given URL.',
-  inputSchema: z.object({
-    url: z.string().describe('The URL to fetch data from.'),
-  }),
-  outputSchema: z.string(),
-},
-async (input) => {
-    // In a real application, this would fetch data from the URL.
-    // For now, it returns a placeholder.
-    console.log(`Fetching data from ${input.url}...`);
-    try {
-        const response = await fetch(input.url);
-        if (!response.ok) {
-            return `Failed to fetch data from ${input.url}. Status: ${response.statusText}`;
-        }
-        const text = await response.text();
-        // Let's return a snippet for brevity in the prompt
-        return text.slice(0, 5000);
-    } catch (e: any) {
-        return `An error occurred while fetching data from ${input.url}: ${e.message}`;
-    }
-  }
-);
-
 const reportGenerationPrompt = ai.definePrompt({
     name: 'reportGenerationPrompt',
     input: { schema: z.object({
@@ -106,7 +80,18 @@ const generateResearchReportFlow = ai.defineFlow(
   async (input) => {
     let liveData: string | undefined;
     if (input.liveDataUrl) {
-      liveData = await fetchDataTool({ url: input.liveDataUrl });
+        try {
+            const response = await fetch(input.liveDataUrl);
+            if (!response.ok) {
+                liveData = `Failed to fetch data from ${input.liveDataUrl}. Status: ${response.statusText}`;
+            } else {
+                const text = await response.text();
+                // Let's return a snippet for brevity in the prompt
+                liveData = text.slice(0, 5000);
+            }
+        } catch (e: any) {
+            liveData = `An error occurred while fetching data from ${input.liveDataUrl}: ${e.message}`;
+        }
     }
 
     const { output } = await reportGenerationPrompt({
@@ -119,16 +104,17 @@ const generateResearchReportFlow = ai.defineFlow(
       throw new Error("The AI failed to generate a report.");
     }
 
-    let sources = [];
+    let sources = output.sources || [];
     if (input.liveDataUrl) {
-      sources.push(input.liveDataUrl);
+      // Avoid adding duplicate sources if the AI already cited it.
+      if (!sources.includes(input.liveDataUrl)) {
+        sources.push(input.liveDataUrl);
+      }
     }
-    // Note: We can't get filenames from data URIs here.
-    // A more robust solution might involve passing file metadata separately.
     
     return {
         ...output,
-        sources: output.sources.concat(sources),
+        sources: sources,
     };
   }
 );
