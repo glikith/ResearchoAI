@@ -52,34 +52,50 @@ const fetchDataTool = ai.defineTool({
 async (input) => {
     // In a real application, this would fetch data from the URL.
     // For now, it returns a placeholder.
-    return `Data fetched from ${input.url}`;
+    console.log(`Fetching data from ${input.url}...`);
+    try {
+        const response = await fetch(input.url);
+        if (!response.ok) {
+            return `Failed to fetch data from ${input.url}. Status: ${response.statusText}`;
+        }
+        const text = await response.text();
+        // Let's return a snippet for brevity in the prompt
+        return text.slice(0, 5000);
+    } catch (e: any) {
+        return `An error occurred while fetching data from ${input.url}: ${e.message}`;
+    }
   }
 );
 
-const generateResearchReportPrompt = ai.definePrompt({
-  name: 'generateResearchReportPrompt',
-  input: {schema: GenerateResearchReportInputSchema},
-  output: {schema: GenerateResearchReportOutputSchema},
-  tools: [fetchDataTool],
-  prompt: `You are a research assistant who generates structured, evidence-based reports with citations.
+const reportGenerationPrompt = ai.definePrompt({
+    name: 'reportGenerationPrompt',
+    input: { schema: z.object({
+        question: z.string(),
+        uploadedFiles: z.array(z.string()).optional(),
+        liveData: z.string().optional(),
+    })},
+    output: { schema: GenerateResearchReportOutputSchema },
+    prompt: `You are a research assistant who generates structured, evidence-based reports with citations.
 
-  Answer the following question, incorporating information from uploaded files and live data sources.
-  Cite your sources.
+Answer the following question, incorporating information from uploaded files and live data sources.
+Cite your sources.
 
-  Question: {{{question}}}
+Question: {{{question}}}
 
-  {{#if uploadedFiles}}
-  Uploaded Files:
-  {{#each uploadedFiles}}
-  - {{media url=this}}
-  {{/each}}
-  {{/if}}
+{{#if uploadedFiles}}
+Uploaded Files Context:
+{{#each uploadedFiles}}
+- {{media url=this}}
+{{/each}}
+{{/if}}
 
-  {{#if liveDataUrl}}
-  You can use the fetchData tool to get live data from the following URL: {{{liveDataUrl}}}
-  {{/if}}
-  `,
+{{#if liveData}}
+Live Data Context:
+{{{liveData}}}
+{{/if}}
+`,
 });
+
 
 const generateResearchReportFlow = ai.defineFlow(
   {
@@ -87,8 +103,32 @@ const generateResearchReportFlow = ai.defineFlow(
     inputSchema: GenerateResearchReportInputSchema,
     outputSchema: GenerateResearchReportOutputSchema,
   },
-  async input => {
-    const {output} = await generateResearchReportPrompt(input);
-    return output!;
+  async (input) => {
+    let liveData: string | undefined;
+    if (input.liveDataUrl) {
+      liveData = await fetchDataTool({ url: input.liveDataUrl });
+    }
+
+    const { output } = await reportGenerationPrompt({
+        question: input.question,
+        uploadedFiles: input.uploadedFiles,
+        liveData,
+    });
+
+    if (!output) {
+      throw new Error("The AI failed to generate a report.");
+    }
+
+    let sources = [];
+    if (input.liveDataUrl) {
+      sources.push(input.liveDataUrl);
+    }
+    // Note: We can't get filenames from data URIs here.
+    // A more robust solution might involve passing file metadata separately.
+    
+    return {
+        ...output,
+        sources: output.sources.concat(sources),
+    };
   }
 );
