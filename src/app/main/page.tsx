@@ -178,18 +178,14 @@ export default function Home() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="text-accent" />
+                  <BarChart3 className="text-primary" />
                   Usage Statistics
                 </CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4 text-center">
+              <CardContent className="text-center">
                 <div className="bg-muted/50 p-4 rounded-lg">
-                  <p className="text-sm text-muted-foreground">Credits Left</p>
+                  <p className="text-sm text-muted-foreground">Credits Left Today</p>
                   <p className="text-2xl font-bold">{creditsLeft}</p>
-                </div>
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <p className="text-sm text-muted-foreground">Reports Generated</p>
-                  <p className="text-2xl font-bold">{reportsGenerated}</p>
                 </div>
               </CardContent>
             </Card>

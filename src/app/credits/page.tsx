@@ -51,7 +51,7 @@ export default function CreditsPage() {
                       <TableCell>{plan.price}</TableCell>
                       <TableCell>{plan.credits}</TableCell>
                       <TableCell className="text-right">
-                        <Button variant={plan.name === 'Pro' ? 'default' : 'outline'}>
+                        <Button variant={plan.name === 'Free' ? 'outline' : 'default'}>
                           {plan.name === 'Free' ? 'Current Plan' : 'Upgrade'}
                         </Button>
                       </TableCell>
